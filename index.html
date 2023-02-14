@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    Hola {{nombre}}
+    {{anio}}
+    <!-- Boton-->
+    <p> Contador: {{contador}}</p>
+    <hr>
+    <button type="button" v-on:click="stopInterval">{{btnMessage}}</button>
+    <!-- Cambiar atributos-->
+    <!-- Cuando se cambian en el = no requieren {{}}-->
+    <hr>
+    <label v-bind:title="titulo" v-bind:data-hola="atributo">Hola Charmander</label>
+    <img v-bind:src="imagen">
+    <button type="button" v-on:click="changeImage">{{btnMessage2}}</button>
+    <hr>
+    <img v-bind:src="imagencomoparametro">
+    <button v-on:click="mostrarImagen('200px-Zapdos.png')">Imagen Zapdos</button>
+    <button v-on:click="mostrarImagen('200px-Moltres.png')">Imagen Moltres</button>
+    <!-- Cambiar modelo-->
+    <!-- Los modelos son valores con interaccion en dos direcciones-->
+    <hr>
+    <label>Ingresa el nombre de tu pokemon usando V-Model</label>
+    <input v-model="nombreDelPokemon" type="text" />
+
+
+    <h5>Hola {{nombreDelPokemon}}!</h5>
+    <label>Elige un pokemon usando V-Model</label>
+    <!--El valor del Vmodel abajo esta vacio y se llena con la opcion... genial-->
+    <select v-model="tuPokemonInicialEs">
+      <option>Charmander</option>
+      <!--Incluso funciona sin value / Pero si esta el value tiene prioridad-->>
+      <option value="Bulbasaur">Bulbasaur</option>
+      <option value="Squirtle">Squirtle</option>
+    </select>
+    <h5>{{tuPokemonInicialEs}}!! Yo te elijo!!</h5>
+    <hr>
+    <label>Iniciales jontho usando V-For</label>
+    <ul>
+      <li v-for="iniciales in inicialesJontho">{{iniciales}}</li>
+    </ul>
+    <label>Iniciales hoen usando V-For para objeto</label>
+    <ul>
+      <!--Como no llamamos el valor usaremos el indice-->
+      <li v-for="iniciales in objInicialesHoen">{{iniciales.nombre}} - {{iniciales.id}}</li>
+      <!--Si uso un metodo con push/slice en ese obj aparecere aqui tambien-->
+      <label>Select de Iniciales hoen usando V-For para objeto</label>
+      <select>
+        <!--v-bind sirve para indicar el value-->
+
+        <option v-for="iniciales in objInicialesHoen" v-bind:value="iniciales.id">{{iniciales.nombre}}</option>
+      </select>
+
+    </ul>
+  </div>
+
+
+  <script src="https://unpkg.com/vue@3"></script>
+  <script>
+    //data, methods, props, events:mounted,created,computed,watch,destroyed
+    let yourDate = new Date()
+    yourDate.toISOString().split('T')[0]
+
+    const holaMundo = {
+
+      data() {
+        return {
+          nombre: 'Mauricio',
+
+          anio: yourDate,
+
+          contador: 0,
+          // necesito guardar en una variable el intervalo para prenderlo en mounted y desactivarlo en methods
+          interval: null,
+          isRunning: false,
+          btnMessage: "Detener",
+          titulo: "Este es un titulo dinamico",
+          imagen: "200px-Charmeleon.png",
+          btnMessage2: "Charmander",
+          isCharmeleon: true,
+          imagencomoparametro: "",
+          atributo: "soy un atributo que se puede ver con inspeccionar",
+          // v-model
+          nombreDelPokemon: "",
+          tuPokemonInicialEs: "",
+          inicialesJontho: ['chikorita', 'cindaquil', 'totodile'],
+          objInicialesHoen: [
+            {
+              id: '1',
+              nombre: 'Mudkip'
+            },
+            {
+              id: '2',
+              nombre: 'Torchic'
+            },
+            {
+              id: '3',
+              nombre: 'Treecko'
+            }
+          ]
+        }
+      },
+      // se ejecuta cuando se monta la pagina
+      mounted() {
+        this.interval = setInterval(() => {
+          this.contador++;
+        }, 1000)
+        this.isRunning = true;
+      },
+
+      methods: {
+        stopInterval() {
+          if (this.isRunning) {
+            clearInterval(this.interval);
+            this.isRunning = false;
+            this.btnMessage = "Continuar";
+
+          }
+          else {
+            this.interval = setInterval(() => {
+              this.contador++;
+            }, 1000)
+            this.isRunning = true
+            this.btnMessage = 'Detener';
+
+          }
+        },
+
+        changeImage() {
+          if (this.isCharmeleon) {
+            this.imagen = "200px-Charmander.png";
+            this.isCharmeleon = false;
+            this.btnMessage2 = "Charmeleon";
+
+          } else {
+            this.imagen = "200px-Charmeleon.png";
+            this.isCharmeleon = true
+            this.btnMessage2 = "Charmeleon";
+
+          }
+
+        },
+        mostrarImagen(imagen) {
+          this.imagencomoparametro = imagen;
+        }
+      }
+    }
+    // var mountedApp se puede acceder desde la consola:
+    var mountedApp = Vue.createApp(holaMundo).mount('#app')
+
+  </script>
+
+</body>
+
+</html>
